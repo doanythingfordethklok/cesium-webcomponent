@@ -36,6 +36,12 @@ const findAttribute = (attrs, key) => {
   return v;
 };
 
+const createUri = (buf) => {
+  const blob = new Blob([ buf ]);
+
+  return URL.createObjectURL(blob);
+};
+
 class CesiumModelViewer extends HTMLElement {
   // Specify observed attributes so that
   // attributeChangedCallback will work
@@ -46,45 +52,39 @@ class CesiumModelViewer extends HTMLElement {
   constructor () {
     super();
     const shadow = this.attachShadow({ mode: 'open' });
+    const root = document.createElement('div');
+    const style = document.createElement('style');
 
-    shadow.innerHTML = `
-    <script src="https://cesiumjs.org/releases/1.60/Build/Cesium/Cesium.js"></script>
-    <link href="https://cesiumjs.org/releases/1.60/Build/Cesium/Widgets/widgets.css" type="text/css" rel="stylesheet" />
+    style.innerText = `
+      @import './Build/Cesium/Widgets/widgets.css';
     `;
 
-    const root = document.createElement('div');
-    const css = document.createElement('style');
-
-    css.innerText = '';
-
-    shadow.appendChild(css);
+    shadow.appendChild(style);
     shadow.appendChild(root);
 
     this.viewer = new Cesium.Viewer(root);
     this.player = null;
-    this.css = css;
     this.root = root;
+    this.animation_set = null;
   }
 
-  setModel (uri) {
-    const that = this;
+  set currentAnimation (x) {
+    this.player.setAnimation(x);
+  }
 
+  set entity (buf) {
     clearViewer(this.viewer);
+    const entity = this.viewer.entities.add(createEntity(createUri(buf)));
+    const animation_set = parseAnimationSetFromUri(buf);
 
-    fetch(uri)
-      .then(res => res.arrayBuffer())
-      .then(buf => {
-        const entity = that.viewer.entities.add(createEntity(uri));
-        const animation_set = parseAnimationSetFromUri(buf);
-
-        that.viewer.zoomTo(entity);
-        that.player = createAnimationPlayer(animation_set, entity, 60);
-        that.player.setAnimation(animation_set.animations[0].name);
-        that.updatePlayer();
-      });
+    this.animation_set = animation_set;
+    this.player = createAnimationPlayer(animation_set, entity, 60);
+    this.player.setAnimation(animation_set.animations[0].name);
+    this.updatePlayer();
+    this.viewer.zoomTo(entity);
   }
 
-  updateCss () {
+  updateContainerDimensions () {
     const width = findAttribute(this.attributes, 'width') || '800px';
     const height = findAttribute(this.attributes, 'height') || '600px';
 
@@ -100,10 +100,14 @@ class CesiumModelViewer extends HTMLElement {
   }
 
   attributeChangedCallback (name, _, newValue) {
+    const that = this;
+
     switch (name) {
       case 'src':
         if (newValue) {
-          this.setModel(newValue);
+          fetch(newValue)
+            .then(res => res.arrayBuffer())
+            .then(buf => that.entity = buf);
         }
         break;
       case 'action':
@@ -114,7 +118,7 @@ class CesiumModelViewer extends HTMLElement {
 
       case 'width':
       case 'height':
-        this.updateCss();
+        this.updateContainerDimensions();
         break;
 
       default:

@@ -1,0 +1,17 @@
+{
+  "name": "parcel-cesium",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel serve -p 8089 ./src/index.html"
+  },
+  "author": "Prominent Edge",
+  "contributors": [
+    "Tommy Messbauer"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.3"
+  }
+}

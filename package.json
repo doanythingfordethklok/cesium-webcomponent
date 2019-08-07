@@ -13,5 +13,8 @@
   "license": "MIT",
   "devDependencies": {
     "parcel-bundler": "^1.12.3"
+  },
+  "dependencies": {
+    "cesium": "^1.60.0"
   }
 }

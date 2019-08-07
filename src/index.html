@@ -3,9 +3,30 @@
     <meta charset="utf-8" />
     <script src="https://cesiumjs.org/releases/1.60/Build/Cesium/Cesium.js"></script>
     <link href="https://cesiumjs.org/releases/1.60/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+    <script src="./index.js"></script>
+    <style>
+      .toolbar {
+        display: flex; 
+        padding: 1rem 0;
+      }
+      .toolbar button {
+        margin-right: 1rem;
+      }
+    </style>
   </head>
   <body>
-    <div id="cesiumContainer" style="width: 700px; height:400px"></div>
-    <script src="./index.js"></script>
+    <div class="toolbar">
+      <input id="file" type="file" />
+      <button onclick="document.getElementById('cesium').setAttribute('action', 'play')">play</button>
+      <button onclick="document.getElementById('cesium').setAttribute('action', 'stop')">stop</button>
+      <button onclick="document.getElementById('cesium').setAttribute('action', 'pause')">pause</button>
+    </div>
+    <model-viewer id="cesium" src="" width="1000px" height="600px" action="play"></model-viewer>
+    <script>
+      document.getElementById("file").addEventListener("change", function(e) {
+        var src = URL.createObjectURL(e.target.files[0]);
+        document.getElementById("cesium").setAttribute("src", src);
+      });
+    </script>
   </body>
 </html>

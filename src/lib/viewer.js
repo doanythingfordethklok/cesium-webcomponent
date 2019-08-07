@@ -55,7 +55,9 @@ class CesiumModelViewer extends HTMLElement {
     const root = document.createElement('div');
     const css = document.createElement('style');
 
-    css.innerText = '';
+    css.innerText = `
+      @import './Build/Cesium/Widgets/widgets.css';
+    `;
 
     shadow.appendChild(css);
     shadow.appendChild(root);

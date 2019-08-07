@@ -2,7 +2,8 @@
   <head>
     <meta charset="utf-8" />
 
-    <script src="./index.js"></script>
+    <script src="./lib/cesium.js"></script>
+    <script src="./lib/viewer.js"></script>
     <style>
       .toolbar {
         display: flex;
@@ -16,16 +17,14 @@
   <body>
     <div class="toolbar">
       <input id="file" type="file" />
-      <button onclick="document.getElementById('cesium').setAttribute('action', 'play')">play</button>
-      <button onclick="document.getElementById('cesium').setAttribute('action', 'stop')">stop</button>
-      <button onclick="document.getElementById('cesium').setAttribute('action', 'pause')">pause</button>
+      <button id="btn_play">play</button>
+      <button id="btn_stop">stop</button>
+      <button id="btn_pause">pause</button>
+      <select id="animation"></select>
     </div>
-    <model-viewer id="cesium" src="" width="1000px" height="600px" action="play"></model-viewer>
-    <script>
-      document.getElementById("file").addEventListener("change", function(e) {
-        var src = URL.createObjectURL(e.target.files[0]);
-        document.getElementById("cesium").setAttribute("src", src);
-      });
-    </script>
+    <model-viewer id="demo_viewer" width="1000px" height="600px" action="play"></model-viewer>
+
+<!--  Remove the html above and add your favorite frame in app.js -->
+  <script src="./app.js"></script>
   </body>
 </html>

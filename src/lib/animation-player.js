@@ -95,7 +95,6 @@ class AnimationPlayer {
   }
 
   _update () {
-    console.log('animation update');
     this.setTime(this.current_time + this._frame_duration * this.speed);
 
     if(this.play_state === PLAY_STATE.PLAY) {

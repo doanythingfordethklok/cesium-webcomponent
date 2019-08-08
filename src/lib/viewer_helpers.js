@@ -1,11 +1,11 @@
 import {
-  calculateOrientationFromMatrix,
-  calculatePositionFromMatrix,
-  calculateDirectionFromMatrix
+  getEntityOrientationFromTransform,
+  getEntityPositionFromTransform,
+  getRayFromMatrix
 } from './calc';
 
 export const rayIntersects = (viewer, current_transform) => {
-  const ray = calculateDirectionFromMatrix(current_transform, new Cesium.Cartesian3(0, 0, 1));
+  const ray = getRayFromMatrix(current_transform, new Cesium.Cartesian3(0, 0, 1));
   const intersection = viewer.scene.globe.pick(ray, viewer.scene);
 
   return intersection !== undefined;
@@ -57,8 +57,8 @@ export const createDebugAxis = (viewer) => {
 };
 
 export const createSensor = (viewer, current_transform) => {
-  const getPosition = translation => () => calculatePositionFromMatrix(current_transform, translation);
-  const getOrientation = () => calculateOrientationFromMatrix(current_transform);
+  const getPosition = translation => () => getEntityPositionFromTransform(current_transform, translation);
+  const getOrientation = () => getEntityOrientationFromTransform(current_transform);
 
   const CONE_LENGTH = 50;
 
@@ -104,7 +104,7 @@ export const createEntity = (uri, position = Cesium.Cartesian3.fromDegrees(-123.
 
   return {
     position,
-    orientation: calculateOrientationFromMatrix(entityMatrix),
+    orientation: getEntityOrientationFromTransform(entityMatrix),
     model: {
       uri,
       runAnimations: false

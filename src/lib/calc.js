@@ -1,16 +1,12 @@
-
-export const calculatePositionFromMatrix = (matrix, translation, position = new Cesium.Cartesian3()) => {
-  const tmp = new Cesium.Matrix4();
-
+export const getEntityPositionFromTransform = (matrix, translation, result = new Cesium.Cartesian3()) => {
   if (matrix) {
-    Cesium.Matrix4.multiplyByTranslation(matrix, translation, tmp);
-    Cesium.Matrix4.getTranslation(tmp, position);
+    Cesium.Matrix4.multiplyByPoint(matrix, translation, result);
   }
 
-  return position;
+  return result;
 };
 
-export const calculateOrientationFromMatrix = (matrix) => {
+export const getEntityOrientationFromTransform = (matrix) => {
   const orientation = new Cesium.Quaternion();
 
   if (matrix) {
@@ -23,7 +19,7 @@ export const calculateOrientationFromMatrix = (matrix) => {
   return orientation;
 };
 
-export const calculateDirectionFromMatrix = (matrix, translation) => {
+export const getRayFromMatrix = (matrix, translation) => {
   if (matrix) {
     const rotMatrix = new Cesium.Matrix3();
 
@@ -31,10 +27,10 @@ export const calculateDirectionFromMatrix = (matrix, translation) => {
 
     // given origin and direction (default to along the z axis)
     // apply the translation to both which generates a vector.
-    const origin = calculatePositionFromMatrix(matrix, translation);
+    const origin = getEntityPositionFromTransform(matrix, translation);
     const direction = new Cesium.Cartesian3();
 
-    Cesium.Matrix3.multiplyByVector(rotMatrix, calculatePositionFromMatrix(matrix, translation, translation), direction);
+    Cesium.Matrix3.multiplyByVector(rotMatrix, getEntityPositionFromTransform(matrix, translation, translation), direction);
 
     return new Cesium.Ray(origin, direction);
   }

@@ -52,6 +52,12 @@ class AnimationPlayer {
 
   setFPS (fps) {
     this._frame_duration = 1.0 / fps;
+
+    if (this.play_state === PLAY_STATE.PLAY) {
+      clearInterval(this.interval_id);
+      this.interval_id = -1;
+      this.interval_id = window.setInterval(() => this._update(), this._frame_duration * 1000);
+    }
   }
 
   play (animation_name) {

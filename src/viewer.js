@@ -16,7 +16,7 @@ class CesiumModelViewer extends HTMLElement {
   // Specify observed attributes so that
   // attributeChangedCallback will work
   static get observedAttributes () {
-    return [ 'src', 'action', 'width', 'height' ];
+    return [ 'src', 'action', 'width', 'height', 'fps' ];
   }
 
   constructor () {
@@ -77,10 +77,11 @@ class CesiumModelViewer extends HTMLElement {
 
     const entity = this.viewer.entities.add(createEntity(createUri(buf)));
     const animation_set = parseAnimationSetFromUri(buf);
+    const fps = findAttribute(this.attributes, 'fps') || 60;
 
     this.debug_axis = createDebugAxis(this.viewer);
     this.sensor = createSensor(this.viewer, this.current_transform);
-    this.player = createAnimationPlayer(animation_set, entity, 60);
+    this.player = createAnimationPlayer(animation_set, entity, fps);
     this.player.setAnimation(animation_set.animations[0].name);
     this.updatePlayer();
     this.viewer.zoomTo(entity);
@@ -141,6 +142,11 @@ class CesiumModelViewer extends HTMLElement {
     const that = this;
 
     switch (name) {
+      case 'fps':
+        if (this.player) {
+          this.player.setFPS(Number(newValue));
+        }
+        break;
       case 'src':
         if (newValue) {
           fetch(newValue)

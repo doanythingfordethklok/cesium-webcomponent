@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "copy": "cp -R ./node_modules/cesium/Build ./dist",
+    "copy": "mkdir -p dist && cp -R ./node_modules/cesium/Build ./dist",
+    "build": "rm -rf dist .cache && yarn run copy && parcel build ./src/index.html --public-url './'",
     "dev": "yarn run copy && parcel serve -p 8089 ./src/index.html"
   },
   "author": "Prominent Edge",
